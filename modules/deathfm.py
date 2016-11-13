@@ -62,6 +62,3 @@ if __name__ == "__main__":
         print("artist:  {0} , album:  {1} , song: {2}".format(aaa[0],aaa[1],aaa[2]) )
         print('\n')
 
-last10songs ()
-currentsong ()
-intt = 1

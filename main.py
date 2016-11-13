@@ -2,21 +2,30 @@ import logging
 from telegram.ext import *
 import random
 import modules.deathfm as df
+import modules.stealkill as st
+from telegram import *
 
-
-
-updater = Updater(token='xxxxxxxxx')
+updater = Updater(token='xxxx')
 dispatcher = updater.dispatcher
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
 
-def start(bot, update): bot.sendMessage(chat_id=update.message.chat_id, text="I'm a bot, please talk to me!")
+def start(bot, update):
+
+    keyboard = [[KeyboardButton(text="/photo"),
+                 KeyboardButton(text="/phrnd")],
+                [KeyboardButton(text="/dfcurrent"),
+                 KeyboardButton(text="/dflast"),
+                 KeyboardButton(text="/stcurrent")]]
+
+    reply_markup_start = ReplyKeyboardMarkup(keyboard,one_time_keyboard = True, resize_keyboard = True)
+    bot.sendMessage(chat_id=update.message.chat_id, text="here are commands", reply_markup = reply_markup_start )
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 
 
-def hui(bot, update): bot.sendMessage(chat_id=update.message.chat_id, text="a vot hui tebe")
+def hui(bot, update): bot.sendMessage(chat_id=update.message.chat_id, text="a vot hui tebe", reply_markup=ReplyKeyboardHide())
 hui_handler = MessageHandler([Filters.text], hui)
 dispatcher.add_handler(hui_handler)
 
@@ -26,12 +35,6 @@ def photo_new (bot,update) : bot.sendPhoto (chat_id=update.message.chat_id, phot
 
 photo_handler = CommandHandler('photo', photo_new)
 dispatcher.add_handler(photo_handler)
-def addi (a,b) : return a+b
-def add (bot,update) : bot.sendMessage(chat_id=update.message.chat_id, text= "'"+str(addi(2,3))+"'" )
-
-addi_handler = CommandHandler('add',add)
-dispatcher.add_handler(addi_handler)
-
 
 photo_list = ['https://pp.vk.me/c626429/v626429662/18f3e/0BpsJlzcS2I.jpg',
               'https://pp.vk.me/c604522/v604522476/2e8bc/3bGACEVfMM8.jpg',
@@ -41,21 +44,20 @@ photo_list = ['https://pp.vk.me/c626429/v626429662/18f3e/0BpsJlzcS2I.jpg',
               'https://pp.vk.me/c636525/v636525115/11bd8/kMxeGuJ1Olg.jpg' ,
               'https://pp.vk.me/c631527/v631527115/30791/lccdpkDo7hc.jpg' ,
               'https://pp.vk.me/c631527/v631527115/307a3/RlTDmVFySnY.jpg']
-def get_num_photo(bot,update) : bot.sendMessage(chat_id=update.message.chat_id, text= str(photo_list[2]) )
+def get_num_photo(bot,update) : bot.sendMessage(chat_id=update.message.chat_id, text= str(photo_list[2]), reply_markup=ReplyKeyboardHide() )
 get_num_photo_handler = CommandHandler('phnum',get_num_photo)
 dispatcher.add_handler(get_num_photo_handler)
 
 
-def get_random_photo (bot,update) : bot.sendMessage(chat_id=update.message.chat_id, text= str(random.choice(photo_list)))
+def get_random_photo (bot,update) : bot.sendMessage(chat_id=update.message.chat_id, text= str(random.choice(photo_list)), reply_markup=ReplyKeyboardHide())
 get_random_photo_handler = CommandHandler('phrnd',get_random_photo)
 dispatcher.add_handler(get_random_photo_handler)
 
 
 def get_current_song_df(bot,update) :
     song = df.currentsong()
-    #song__ = str(song).split(',')
     curr_song = "   artist:  {0} , album:  {1} , song: {2}".format(song[0], song[1], song[2])
-    bot.sendMessage(chat_id=update.message.chat_id, text=curr_song)
+    bot.sendMessage(chat_id=update.message.chat_id, text=curr_song, reply_markup=ReplyKeyboardHide())
 
 get_current_song_df_handler = CommandHandler('dfcurrent',get_current_song_df)
 dispatcher.add_handler(get_current_song_df_handler)
@@ -71,11 +73,17 @@ def get_last_songs_df(bot,update) :
         songs_list += str(i)
         songs_list += aaaa
         songs_list += '\n'
-    bot.sendMessage(chat_id=update.message.chat_id, text=songs_list)
+    bot.sendMessage(chat_id=update.message.chat_id, text=songs_list, reply_markup=ReplyKeyboardHide())
 
 get_last_songs_df_handler = CommandHandler('dflast',get_last_songs_df)
 dispatcher.add_handler(get_last_songs_df_handler)
 
 
+def get_current_song_st(bot,update) :
+    curr_song = st.currentsong()
+    bot.sendMessage(chat_id=update.message.chat_id, text=curr_song, reply_markup=ReplyKeyboardHide())
+
+get_curr_song_st_handler = CommandHandler('stcurrent',get_current_song_st)
+dispatcher.add_handler(get_curr_song_st_handler)
 
 updater.start_polling()
