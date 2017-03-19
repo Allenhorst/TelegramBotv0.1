@@ -4,12 +4,18 @@ import random
 import modules.deathfm as df
 import modules.stealkill as st
 from telegram import *
-
-updater = Updater(token='xxxx')
-dispatcher = updater.dispatcher
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+import configparser as cp
+import os.path
 
 
+
+config_found = os.path.isfile("./config.ini")
+if config_found :
+    config = cp.ConfigParser()
+    config.read("config.ini")
+    updater = Updater(token=config["BOT"]["Token"])
+    dispatcher = updater.dispatcher
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 def start(bot, update):
 
@@ -19,7 +25,7 @@ def start(bot, update):
                  KeyboardButton(text="/dflast"),
                  KeyboardButton(text="/stcurrent")]]
 
-    reply_markup_start = ReplyKeyboardMarkup(keyboard,one_time_keyboard = True, resize_keyboard = True)
+    reply_markup_start = ReplyKeyboardMarkup(keyboard,one_time_keyboard = False, resize_keyboard = True)
     bot.sendMessage(chat_id=update.message.chat_id, text="here are commands", reply_markup = reply_markup_start )
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
